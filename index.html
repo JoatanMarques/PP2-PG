@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="css/index.css" type="text/css" />
+</head>
+
+<body>
+
+  <!-- Libs auxiliares -->
+  <script src="http://graphics.cs.wisc.edu/JS/twgl-full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.3.2/gl-matrix-min.js"></script>
+
+  <!-- Shader de vertex -->
+  <script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec3 aVertexColor;
+  
+    varying vec3 vColor;
+  
+    uniform mat4 uMVP;
+  
+    void main(void) {
+      vColor = aVertexColor;
+      gl_Position = uMVP * vec4(aVertexPosition, 1.0);
+    }
+  </script>
+
+  <!-- Shader de fragment -->
+  <script id="shader-fs" type="x-shader/x-fragment">
+   precision highp float;
+   varying vec3 vColor;
+  
+    void main(void) {
+      gl_FragColor = vec4(vColor, 1.0);
+    }
+  </script>
+
+  <canvas id="my-canvas"></canvas>
+
+  <!-- Script principal -->
+  <script type="text/javascript" src="js/index.js"></script>
+
+</body>
+
+</html>
