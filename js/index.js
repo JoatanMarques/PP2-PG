@@ -19,6 +19,7 @@ function init() {
 
   definirQuadrado();
   definirEsfera();
+  definirTriangulo();
 
   configurarAnimacaoERenderizar();
 }
@@ -167,60 +168,139 @@ function definirQuadrado() {
 }
 
 function definirEsfera() {
-    var SPHERE_DIV = 12;
-    var i, ai, si, ci;
-    var j, aj, sj, cj;
-    var p1, p2;
-    for (j = 0; j <= SPHERE_DIV; j++) {
-      aj = j * Math.PI / SPHERE_DIV;
-      sj = Math.sin(aj);
-      cj = Math.cos(aj);
-      for (i = 0; i <= SPHERE_DIV; i++) {
-        ai = i * 2 * Math.PI / SPHERE_DIV;
-        si = Math.sin(ai);
-        ci = Math.cos(ai);
-        sphereVertices.push(4 + si * sj);  // X
-        sphereVertices.push(cj);       // Y
-        sphereVertices.push(ci * sj);  // Z
-      }
+  var SPHERE_DIV = 12;
+  var i, ai, si, ci;
+  var j, aj, sj, cj;
+  var p1, p2;
+  for (j = 0; j <= SPHERE_DIV; j++) {
+    aj = j * Math.PI / SPHERE_DIV;
+    sj = Math.sin(aj);
+    cj = Math.cos(aj);
+    for (i = 0; i <= SPHERE_DIV; i++) {
+      ai = i * 2 * Math.PI / SPHERE_DIV;
+      si = Math.sin(ai);
+      ci = Math.cos(ai);
+      sphereVertices.push(4 + si * sj);  // X
+      sphereVertices.push(cj);       // Y
+      sphereVertices.push(ci * sj);  // Z
     }
+  }
 
-    for (j = 0; j < SPHERE_DIV; j++) {
-      for (i = 0; i < SPHERE_DIV; i++) {
-        p1 = j * (SPHERE_DIV + 1) + i;
-        p2 = p1 + (SPHERE_DIV + 1);
-        sphereIndex.push(p1);
-        sphereIndex.push(p2);
-        sphereIndex.push(p1 + 1);
-        sphereIndex.push(p1 + 1);
-        sphereIndex.push(p2);
-        sphereIndex.push(p2 + 1);
-        sphereColors.push(0.0, 1.0, 0.0);
-        sphereColors.push(1.0, 0.0, 1.0);
-        sphereColors.push(0.5, 0.0, 0.0);
-        sphereColors.push(1.0, 1.0, 0.0);
-        sphereColors.push(0.0, 1.0, 0.0);
-        sphereColors.push(0.0, 0.5, 0.0);
-      }
+  for (j = 0; j < SPHERE_DIV; j++) {
+    for (i = 0; i < SPHERE_DIV; i++) {
+      p1 = j * (SPHERE_DIV + 1) + i;
+      p2 = p1 + (SPHERE_DIV + 1);
+      sphereIndex.push(p1);
+      sphereIndex.push(p2);
+      sphereIndex.push(p1 + 1);
+      sphereIndex.push(p1 + 1);
+      sphereIndex.push(p2);
+      sphereIndex.push(p2 + 1);
+      sphereColors.push(0.0, 1.0, 0.0);
+      sphereColors.push(1.0, 0.0, 1.0);
+      sphereColors.push(0.5, 0.0, 0.0);
+      sphereColors.push(1.0, 1.0, 0.0);
+      sphereColors.push(0.0, 1.0, 0.0);
+      sphereColors.push(0.0, 0.5, 0.0);
     }
+  }
 
 
-    sphereVerticesBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, sphereVerticesBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereVertices), gl.STATIC_DRAW);
-    sphereVerticesBuffer.itemSize = 3;
-    sphereVerticesBuffer.numItems = 24;
+  sphereVerticesBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, sphereVerticesBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereVertices), gl.STATIC_DRAW);
+  sphereVerticesBuffer.itemSize = 3;
+  sphereVerticesBuffer.numItems = 24;
 
 
-    sphereColorBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, sphereColorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereColors), gl.STATIC_DRAW);
-    sphereColorBuffer.itemSize = 3;
-    sphereColorBuffer.numItems = 24;
+  sphereColorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, sphereColorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereColors), gl.STATIC_DRAW);
+  sphereColorBuffer.itemSize = 3;
+  sphereColorBuffer.numItems = 24;
 
-    sphereIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereIndexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array(sphereIndex), gl.STATIC_DRAW);
+  sphereIndexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereIndexBuffer);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array(sphereIndex), gl.STATIC_DRAW);
+}
+
+function definirTriangulo() {
+  triangleVertices = [
+    // Bottom face
+    1.0, -1.0, -1.0,
+    -1.0, -1.0, -1.0,
+    -1.0, -1.0, 1.0,
+    1.0, -1.0, 1.0,
+
+    //Back Face
+    -1.0, -1.0, -1.0,
+    1.0, -1.0, -1.0,
+    0.0, 1.0, 0.0,
+
+    //Right Face
+    1.0, -1.0, -1.0,
+    1.0, -1.0, 1.0,
+    0.0, 1.0, 0.0,
+
+    //Left Face
+    -1.0, -1.0, -1.0,
+    -1.0, -1.0, 1.0,
+    0.0, 1.0, 0.0,
+
+    //Front Face
+    -1.0, -1.0, 1.0,
+    1.0, -1.0, 1.0,
+    0.0, 1.0, 0.0,
+  ];
+
+
+  triangleColors = [
+    1.0, 0.0, 0.0,
+    1.0, 0.0, 0.0,
+    1.0, 0.0, 0.0,
+    1.0, 0.0, 0.0,
+
+    0.0, 1.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 1.0, 0.0,
+
+    1.0, 0.0, 1.0,
+    1.0, 0.0, 1.0,
+    1.0, 0.0, 1.0,
+
+    0.5, 0.0, 0.0,
+    0.5, 0.0, 0.0,
+    0.5, 0.0, 0.0,
+
+    0.0, 5.0, 0.0,
+    0.0, 5.0, 0.0,
+    0.0, 5.0, 0.0,
+  ];
+
+  triangleIndex = [
+    0, 1, 2, 0, 2, 3, // bottom
+    4, 5, 6, // back
+    7, 8, 9, // right
+    10, 11, 12, // left
+    13, 14, 15, // front
+  ];
+
+  triangleVerticesBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, triangleVerticesBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleVertices), gl.STATIC_DRAW);
+  triangleVerticesBuffer.itemSize = 3;
+  triangleVerticesBuffer.numItems = 24;
+
+  triangleColorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, triangleColorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleColors), gl.STATIC_DRAW);
+  triangleColorBuffer.itemSize = 3;
+  triangleColorBuffer.numItems = 24;
+
+  triangleIndexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleIndexBuffer);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array(triangleIndex), gl.STATIC_DRAW);
+
 }
 
 function configurarAnimacaoERenderizar() {
@@ -257,6 +337,7 @@ function setarCameraERenderizar(anguloDeRotacao) {
 
   renderizarQuadrado(mvpEstatico);
   renderizarEsfera(mvpEstatico);
+  renderizarTriangulo(mvpAnimado);
 }
 
 function renderizarQuadrado(mvp) {
@@ -275,18 +356,33 @@ function renderizarQuadrado(mvp) {
 }
 
 function renderizarEsfera(mvp) {
-    gl.uniformMatrix4fv(shaderProgram.MVPmatrix, false, mvp);
+  gl.uniformMatrix4fv(shaderProgram.MVPmatrix, false, mvp);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, sphereVerticesBuffer);
-    gl.vertexAttribPointer(shaderProgram.PositionAttribute, sphereVerticesBuffer.itemSize,
-      gl.FLOAT, false, 0, 0);
-    gl.bindBuffer(gl.ARRAY_BUFFER, sphereColorBuffer);
-    gl.vertexAttribPointer(shaderProgram.ColorAttribute, sphereColorBuffer.itemSize,
-      gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, sphereVerticesBuffer);
+  gl.vertexAttribPointer(shaderProgram.PositionAttribute, sphereVerticesBuffer.itemSize,
+    gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, sphereColorBuffer);
+  gl.vertexAttribPointer(shaderProgram.ColorAttribute, sphereColorBuffer.itemSize,
+    gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereIndexBuffer);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereIndexBuffer);
 
-    gl.drawElements(gl.TRIANGLES, sphereIndex.length, gl.UNSIGNED_BYTE, 0);
+  gl.drawElements(gl.TRIANGLES, sphereIndex.length, gl.UNSIGNED_BYTE, 0);
+}
+
+function renderizarTriangulo(mvp) {
+  gl.uniformMatrix4fv(shaderProgram.MVPmatrix, false, mvp);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, triangleVerticesBuffer);
+  gl.vertexAttribPointer(shaderProgram.PositionAttribute, triangleVerticesBuffer.itemSize,
+    gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, sphereColorBuffer);
+  gl.vertexAttribPointer(shaderProgram.ColorAttribute, triangleColorBuffer.itemSize,
+    gl.FLOAT, false, 0, 0);
+
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleIndexBuffer);
+
+  gl.drawElements(gl.TRIANGLES, triangleIndex.length, gl.UNSIGNED_BYTE, 0);
 }
 
 init();
