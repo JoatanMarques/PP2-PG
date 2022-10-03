@@ -18,6 +18,7 @@ function init() {
   iniciarShaders();
 
   definirQuadrado();
+  definirEsfera();
 
   configurarAnimacaoERenderizar();
 }
@@ -165,7 +166,62 @@ function definirQuadrado() {
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array(cubeIndex), gl.STATIC_DRAW);
 }
 
+function definirEsfera() {
+    var SPHERE_DIV = 12;
+    var i, ai, si, ci;
+    var j, aj, sj, cj;
+    var p1, p2;
+    for (j = 0; j <= SPHERE_DIV; j++) {
+      aj = j * Math.PI / SPHERE_DIV;
+      sj = Math.sin(aj);
+      cj = Math.cos(aj);
+      for (i = 0; i <= SPHERE_DIV; i++) {
+        ai = i * 2 * Math.PI / SPHERE_DIV;
+        si = Math.sin(ai);
+        ci = Math.cos(ai);
+        sphereVertices.push(4 + si * sj);  // X
+        sphereVertices.push(cj);       // Y
+        sphereVertices.push(ci * sj);  // Z
+      }
+    }
 
+    for (j = 0; j < SPHERE_DIV; j++) {
+      for (i = 0; i < SPHERE_DIV; i++) {
+        p1 = j * (SPHERE_DIV + 1) + i;
+        p2 = p1 + (SPHERE_DIV + 1);
+        sphereIndex.push(p1);
+        sphereIndex.push(p2);
+        sphereIndex.push(p1 + 1);
+        sphereIndex.push(p1 + 1);
+        sphereIndex.push(p2);
+        sphereIndex.push(p2 + 1);
+        sphereColors.push(0.0, 1.0, 0.0);
+        sphereColors.push(1.0, 0.0, 1.0);
+        sphereColors.push(0.5, 0.0, 0.0);
+        sphereColors.push(1.0, 1.0, 0.0);
+        sphereColors.push(0.0, 1.0, 0.0);
+        sphereColors.push(0.0, 0.5, 0.0);
+      }
+    }
+
+
+    sphereVerticesBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, sphereVerticesBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereVertices), gl.STATIC_DRAW);
+    sphereVerticesBuffer.itemSize = 3;
+    sphereVerticesBuffer.numItems = 24;
+
+
+    sphereColorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, sphereColorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereColors), gl.STATIC_DRAW);
+    sphereColorBuffer.itemSize = 3;
+    sphereColorBuffer.numItems = 24;
+
+    sphereIndexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereIndexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array(sphereIndex), gl.STATIC_DRAW);
+}
 
 function configurarAnimacaoERenderizar() {
   var anguloDeRotacao = 0;
@@ -200,6 +256,7 @@ function setarCameraERenderizar(anguloDeRotacao) {
 
 
   renderizarQuadrado(mvpEstatico);
+  renderizarEsfera(mvpEstatico);
 }
 
 function renderizarQuadrado(mvp) {
@@ -215,6 +272,21 @@ function renderizarQuadrado(mvp) {
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeIndexBuffer);
 
   gl.drawElements(gl.TRIANGLES, cubeIndex.length, gl.UNSIGNED_BYTE, 0);
+}
+
+function renderizarEsfera(mvp) {
+    gl.uniformMatrix4fv(shaderProgram.MVPmatrix, false, mvp);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, sphereVerticesBuffer);
+    gl.vertexAttribPointer(shaderProgram.PositionAttribute, sphereVerticesBuffer.itemSize,
+      gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, sphereColorBuffer);
+    gl.vertexAttribPointer(shaderProgram.ColorAttribute, sphereColorBuffer.itemSize,
+      gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereIndexBuffer);
+
+    gl.drawElements(gl.TRIANGLES, sphereIndex.length, gl.UNSIGNED_BYTE, 0);
 }
 
 init();
